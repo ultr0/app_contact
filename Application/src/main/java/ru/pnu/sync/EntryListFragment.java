@@ -259,6 +259,8 @@ public class EntryListFragment extends ListFragment
             // If the user clicks the "Refresh" button.
             case R.id.menu_refresh:
                 SyncUtils.TriggerRefresh();
+                Parse g = new Parse();
+                g.Parse_contacts(null, null, "");
                 return true;
         }
         return super.onOptionsItemSelected(item);

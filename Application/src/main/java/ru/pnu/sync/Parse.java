@@ -1,11 +1,12 @@
 package ru.pnu.sync;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,25 +26,53 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import ru.pnu.common.logger.Log;
+
 
 /**
  * Created by ultr0 on 29.04.2016.
  */
 
+public class Parse {
+    public Context context;
 
-private class Parse extends AsyncTask<String, Void, String> {
+    String http = "http://10.10.15.4:8000";
+
+    Parse(){
+
+    }
+    boolean Parse_contacts(List<NameValuePair> card, Context context, String profile){
+        ///Log.d("LOLOLO", URLEncodedUtils.format(card, "utf-8") );
+        new Parse_contacts(null,0).execute("");
+        return true;
+    }
+
+class contact{
+     String title;
+     String name;
+     String surname;
+     String patronymic;
+     String phone;
+     int ip;
+     String room;
+     String department;
+     String post;
+     String group;
+}
+
+class Parse_contacts extends AsyncTask<String, Void, String> {
 
     HttpURLConnection urlConnection = null;
     BufferedReader reader = null;
     String resultJson = "";
     Context context;
     int url_a;
-    public Parse(Context con, int url) {
+    public Parse_contacts(Context con, int url) {
         super();
         this.url_a = url;
         context = con;
     }
+
+
 
 //        @Override
 //        protected void onPreExecute() {
@@ -64,7 +93,7 @@ private class Parse extends AsyncTask<String, Void, String> {
 
             urlConnection.setReadTimeout(10000);
             urlConnection.setConnectTimeout(15000);
-            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestMethod("GET");
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
 
@@ -129,60 +158,70 @@ private class Parse extends AsyncTask<String, Void, String> {
         Log.d("Luser", strJson);
 
         JSONObject dataJsonObj = null;
-        String secondName = "";
-
-        String title = "";
-        String description = "";
-        String completed = "";
+//        String secondName = "";
+//
+//        String title = "";
+//        String description = "";
+//        String completed = "";
         JSONArray jsonArray = null;
-
 
 
         try {
             jsonArray = new JSONArray(strJson);
 
+            contact[] a = new contact[jsonArray.length()];
+//            var.edu_rasp_api[] a = new var.edu_rasp_api[jsonArray.length()];
 
-            var.edu_rasp_api[] a = new var.edu_rasp_api[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
 
-            for (int i=0; i<jsonArray.length(); i++){
-
-                a[i] = new var.edu_rasp_api();
-                Log.d("json", jsonArray.getJSONObject(i).getString("discipline") + " " + jsonArray.getJSONObject(i).getString("room")+" "+jsonArray.getJSONObject(i).getString("teacher")+" "+jsonArray.getJSONObject(i).getString("weekday"));
-                a[i].discipline=jsonArray.getJSONObject(i).getString("discipline");
-                a[i].weekday=jsonArray.getJSONObject(i).getInt("weekday");
-                a[i].room=jsonArray.getJSONObject(i).getString("room");
-                a[i].subgroup=jsonArray.getJSONObject(i).getString("s_br");
-                a[i].para=jsonArray.getJSONObject(i).getInt("hour");
-                a[i].week_type=jsonArray.getJSONObject(i).getString("w_t");
-                a[i].type_p=jsonArray.getJSONObject(i).getString("type");
-                a[i].teacher=jsonArray.getJSONObject(i).getString("teacher");
+                a[i] = new contact();
+                Log.d("json", jsonArray.getJSONObject(i).getString("title")
+                        + " " + jsonArray.getJSONObject(i).getString("name")
+                        + " " + jsonArray.getJSONObject(i).getString("surname")
+                        + " " + jsonArray.getJSONObject(i).getString("patronymic")
+                        + " " + jsonArray.getJSONObject(i).getString("phone")
+                        + " " + jsonArray.getJSONObject(i).getString("ip")
+                        + " " + jsonArray.getJSONObject(i).getString("room")
+                        + " " + jsonArray.getJSONObject(i).getString("department")
+                        + " " + jsonArray.getJSONObject(i).getString("post")
+                        + " " + jsonArray.getJSONObject(i).getString("group"));
+                a[i].title = jsonArray.getJSONObject(i).getString("title");
+                a[i].name = jsonArray.getJSONObject(i).getString("name");
+                a[i].surname = jsonArray.getJSONObject(i).getString("surname");
+                a[i].patronymic = jsonArray.getJSONObject(i).getString("patronymic");
+                a[i].phone = jsonArray.getJSONObject(i).getString("phone");
+                a[i].ip = jsonArray.getJSONObject(i).getInt("ip");
+                a[i].room = jsonArray.getJSONObject(i).getString("room");
+                a[i].department = jsonArray.getJSONObject(i).getString("department");
+                a[i].post = jsonArray.getJSONObject(i).getString("post");
+                a[i].group = jsonArray.getJSONObject(i).getString("group");
             }
 
-            Systemf i_kill_you = new Systemf();
-            var.edu_rasp_api[][] debilism;
-            debilism = i_kill_you.get_struct_weekday_rasp(a);
-            for(int i=0; i<6; i++){
+//            Systemf i_kill_you = new Systemf();
+//            var.edu_rasp_api[][] debilism;
+//            debilism = i_kill_you.get_struct_weekday_rasp(a);
+//            for(int i=0; i<6; i++){
+//
+//                Log.d("struct","----------day-"+(i+1)+"----------- len:"+debilism[i].length);
+//                for(var.edu_rasp_api strong:debilism[i]){
+//                    try{
+//                        Log.d("struct",strong.discipline+" "+strong.type_p);}
+//                    catch(Exception e){
+//
+//                    }
+//                }
+//            }
 
-                Log.d("struct","----------day-"+(i+1)+"----------- len:"+debilism[i].length);
-                for(var.edu_rasp_api strong:debilism[i]){
-                    try{
-                        Log.d("struct",strong.discipline+" "+strong.type_p);}
-                    catch(Exception e){
-
-                    }
-                }
-            }
-
-            dialog.dismiss();
-            ((main)context).displayView(0,debilism);
+//            dialog.dismiss();
+//            ((main)context).displayView(0,debilism);
         } catch (JSONException e) {
-
-        }
-        catch (Exception e){
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
 
     }
+}
 }
