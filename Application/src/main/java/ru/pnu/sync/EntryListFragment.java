@@ -260,7 +260,7 @@ public class EntryListFragment extends ListFragment
             case R.id.menu_refresh:
                 SyncUtils.TriggerRefresh();
                 Parse g = new Parse();
-                g.Parse_contacts(null, null, "");
+                g.Parse_contacts(null, getContext(), "");
                 return true;
         }
         return super.onOptionsItemSelected(item);

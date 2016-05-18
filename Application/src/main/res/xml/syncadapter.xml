@@ -20,6 +20,6 @@ limitations under the License.
               android:accountType="ru.pnu.sync.account"
               android:userVisible="false"
               android:supportsUploading="false"
-              android:allowParallelSyncs="false"
+              android:allowParallelSyncs="true"
               android:isAlwaysSyncable="true"
         />

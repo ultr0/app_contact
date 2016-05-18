@@ -2,6 +2,7 @@ package ru.pnu.sync;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -11,6 +12,17 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.provider.ContactsContract;
+import android.content.ContentValues;
+import android.content.ContentUris;
+import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.Data;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.PhoneLookup;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,6 +38,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import static android.provider.ContactsContract.*;
 
 
 /**
@@ -42,7 +55,7 @@ public class Parse {
     }
     boolean Parse_contacts(List<NameValuePair> card, Context context, String profile){
         ///Log.d("LOLOLO", URLEncodedUtils.format(card, "utf-8") );
-        new Parse_contacts(null,0).execute("");
+        new Parse_contacts(context,0).execute("");
         return true;
     }
 
@@ -155,14 +168,9 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
         super.onPostExecute(strJson);
         // выводим целиком полученную json-строку
 
-        Log.d("Luser", strJson);
+        Log.d("users", strJson);
 
         JSONObject dataJsonObj = null;
-//        String secondName = "";
-//
-//        String title = "";
-//        String description = "";
-//        String completed = "";
         JSONArray jsonArray = null;
 
 
@@ -170,6 +178,7 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
             jsonArray = new JSONArray(strJson);
 
             contact[] a = new contact[jsonArray.length()];
+            Log.d("length json", String.valueOf(jsonArray.length()));
 //            var.edu_rasp_api[] a = new var.edu_rasp_api[jsonArray.length()];
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -197,6 +206,43 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                 a[i].group = jsonArray.getJSONObject(i).getString("group");
             }
 
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                        .build());
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(
+                                ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                        .withValue(
+                                ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
+                                a[i].surname).build());
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(
+                                ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,
+                                a[i].phone)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                                Phone.TYPE_MOBILE).build());
+                try {
+                    context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("add contacts", "Контакт: " + a[i].surname + " добавлен");
+            }
+
+
 //            Systemf i_kill_you = new Systemf();
 //            var.edu_rasp_api[][] debilism;
 //            debilism = i_kill_you.get_struct_weekday_rasp(a);
@@ -223,5 +269,5 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
 
 
     }
-}
+    }
 }
