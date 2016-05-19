@@ -65,7 +65,7 @@ class contact{
      String surname;
      String patronymic;
      String phone;
-     int ip;
+     String ip;
      String room;
      String department;
      String post;
@@ -199,7 +199,7 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                 a[i].surname = jsonArray.getJSONObject(i).getString("surname");
                 a[i].patronymic = jsonArray.getJSONObject(i).getString("patronymic");
                 a[i].phone = jsonArray.getJSONObject(i).getString("phone");
-                a[i].ip = jsonArray.getJSONObject(i).getInt("ip");
+                a[i].ip = jsonArray.getJSONObject(i).getString("ip");
                 a[i].room = jsonArray.getJSONObject(i).getString("room");
                 a[i].department = jsonArray.getJSONObject(i).getString("department");
                 a[i].post = jsonArray.getJSONObject(i).getString("post");
@@ -211,9 +211,10 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                 ArrayList<ContentProviderOperation> ops = new ArrayList<>();
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.RawContacts.CONTENT_URI)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "ru.pnu.sync")
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "PNU.Contacts")
                         .build());
+//                добавляем ФИО
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.Data.CONTENT_URI)
                         .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
@@ -221,8 +222,15 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                                 ContactsContract.Data.MIMETYPE,
                                 ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
                         .withValue(
+                                ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME,
+                                a[i].surname)
+                        .withValue(
                                 ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
-                                a[i].surname).build());
+                                a[i].name)
+                        .withValue(
+                                ContactsContract.CommonDataKinds.StructuredName.MIDDLE_NAME,
+                                a[i].patronymic).build());
+//                добавляем телефон основной
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.Data.CONTENT_URI)
                         .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
@@ -232,7 +240,54 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                         .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,
                                 a[i].phone)
                         .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
-                                Phone.TYPE_MOBILE).build());
+                                Phone.TYPE_WORK).build());
+//                добавляем телефон SIP
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(
+                                ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE)
+                        .withValue(CommonDataKinds.SipAddress.SIP_ADDRESS,
+                                a[i].ip)
+                        .withValue(ContactsContract.CommonDataKinds.SipAddress.TYPE,
+                                ContactsContract.CommonDataKinds.SipAddress.TYPE_WORK)
+                        .build());
+//                добавляем имя компании
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(
+                                ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)
+                        .withValue(
+                                ContactsContract.CommonDataKinds.Organization.COMPANY,
+                                a[i].group)
+                        .withValue(ContactsContract.CommonDataKinds.Organization.TYPE,
+                                ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
+                        .withValue(
+                                CommonDataKinds.Organization.TITLE,
+                                a[i].post+", "+a[i].department)
+                        .withValue(ContactsContract.CommonDataKinds.Organization.TYPE,
+                                ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
+                        .withValue(
+                                ContactsContract.CommonDataKinds.Organization.OFFICE_LOCATION,
+                                a[i].room).build());
+
+                ops.add(ContentProviderOperation
+                        .newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(
+                                ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)
+                        .withValue(CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS,
+                                a[i].room)
+                        .withValue(ContactsContract.CommonDataKinds.StructuredPostal.TYPE,
+                                CommonDataKinds.StructuredPostal.TYPE_CUSTOM)
+                        .withValue(CommonDataKinds.StructuredPostal.LABEL,
+                                "Аудитория")
+                        .build());
+
                 try {
                     context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
                 } catch (Exception e) {
