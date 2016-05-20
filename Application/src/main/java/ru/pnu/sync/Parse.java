@@ -46,7 +46,7 @@ import static android.provider.ContactsContract.*;
  */
 
 public class Parse {
-    public Context context;
+//    public Context context;
 
     String http = "http://10.10.15.4:8000";
 

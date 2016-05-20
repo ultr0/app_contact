@@ -4,4 +4,10 @@
     <style name="Theme.Sample" parent="Theme.Base">
         <item name="android:statusBarColor">@color/black</item>
     </style>
+
+    <style name="AppTheme" parent="Theme.Sample">
+        <item name="android:statusBarColor">@color/design_fab_stroke_top_inner_color</item>
+        <item name="android:navigationBarColor">@color/design_fab_stroke_top_inner_color</item>
+        <item name="android:colorAccent">@color/design_fab_stroke_top_inner_color</item>
+    </style>
 </resources>
