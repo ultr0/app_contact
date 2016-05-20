@@ -69,6 +69,7 @@ class contact{
      String room;
      String department;
      String post;
+     int id;
      String group;
 }
 
@@ -203,11 +204,19 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                 a[i].room = jsonArray.getJSONObject(i).getString("room");
                 a[i].department = jsonArray.getJSONObject(i).getString("department");
                 a[i].post = jsonArray.getJSONObject(i).getString("post");
+                a[i].id = jsonArray.getJSONObject(i).getInt("id");
                 a[i].group = jsonArray.getJSONObject(i).getString("group");
             }
 
 
             for (int i = 0; i < jsonArray.length(); i++) {
+
+                String md5hash = md5Generate.main(
+                        a[i].title+a[i].phone+a[i].ip+a[i].room+a[i].department+a[i].post
+                );
+
+                Log.d("MD5", md5hash);
+
                 ArrayList<ContentProviderOperation> ops = new ArrayList<>();
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.RawContacts.CONTENT_URI)
@@ -270,9 +279,13 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                                 a[i].post+", "+a[i].department)
                         .withValue(ContactsContract.CommonDataKinds.Organization.TYPE,
                                 ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
+                        // это не про компанию, а наглое использование не
                         .withValue(
                                 ContactsContract.CommonDataKinds.Organization.OFFICE_LOCATION,
-                                a[i].room).build());
+                                a[i].id)
+                        .withValue(
+                                CommonDataKinds.Organization.JOB_DESCRIPTION,
+                                md5hash).build());
 
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.Data.CONTENT_URI)
@@ -298,23 +311,6 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
             }
 
 
-//            Systemf i_kill_you = new Systemf();
-//            var.edu_rasp_api[][] debilism;
-//            debilism = i_kill_you.get_struct_weekday_rasp(a);
-//            for(int i=0; i<6; i++){
-//
-//                Log.d("struct","----------day-"+(i+1)+"----------- len:"+debilism[i].length);
-//                for(var.edu_rasp_api strong:debilism[i]){
-//                    try{
-//                        Log.d("struct",strong.discipline+" "+strong.type_p);}
-//                    catch(Exception e){
-//
-//                    }
-//                }
-//            }
-
-//            dialog.dismiss();
-//            ((main)context).displayView(0,debilism);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
