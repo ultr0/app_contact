@@ -12,6 +12,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.os.Build;
 
 import android.provider.ContactsContract;
 import android.content.ContentValues;
@@ -70,6 +71,7 @@ class contact{
      String department;
      String post;
      int id;
+     String hash;
      String group;
 }
 
@@ -205,17 +207,21 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                 a[i].department = jsonArray.getJSONObject(i).getString("department");
                 a[i].post = jsonArray.getJSONObject(i).getString("post");
                 a[i].id = jsonArray.getJSONObject(i).getInt("id");
+                a[i].hash = jsonArray.getJSONObject(i).getString("hash");
                 a[i].group = jsonArray.getJSONObject(i).getString("group");
             }
 
 
             for (int i = 0; i < jsonArray.length(); i++) {
 
-                String md5hash = md5Generate.main(
-                        a[i].title+a[i].phone+a[i].ip+a[i].room+a[i].department+a[i].post
-                );
+                String md5hash = "";
 
-                Log.d("MD5", md5hash);
+                if (a[i].hash.equals("")){
+                    md5hash = md5Generate.main(
+                            a[i].title+a[i].phone+a[i].ip+a[i].room+a[i].department+a[i].post
+                    );
+                    Log.d("MD5", md5hash);
+                }
 
                 ArrayList<ContentProviderOperation> ops = new ArrayList<>();
                 ops.add(ContentProviderOperation
@@ -251,17 +257,35 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                         .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
                                 Phone.TYPE_WORK).build());
 //                добавляем телефон SIP
-                ops.add(ContentProviderOperation
-                        .newInsert(ContactsContract.Data.CONTENT_URI)
-                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                        .withValue(
-                                ContactsContract.Data.MIMETYPE,
-                                ContactsContract.CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE)
-                        .withValue(CommonDataKinds.SipAddress.SIP_ADDRESS,
-                                a[i].ip)
-                        .withValue(ContactsContract.CommonDataKinds.SipAddress.TYPE,
-                                ContactsContract.CommonDataKinds.SipAddress.TYPE_WORK)
-                        .build());
+                String manufacturer = Build.MANUFACTURER;
+                if (manufacturer.equals("LENOVO")) {
+                    ops.add(ContentProviderOperation
+                            .newInsert(ContactsContract.Data.CONTENT_URI)
+                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                            .withValue(
+                                    ContactsContract.Data.MIMETYPE,
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                            .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,
+                                    a[i].ip)
+                            .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                                    CommonDataKinds.Phone.TYPE_CUSTOM)
+                            .withValue(CommonDataKinds.Phone.LABEL,
+                                    "SIP").build());
+                }
+                else {
+                    ops.add(ContentProviderOperation
+                            .newInsert(ContactsContract.Data.CONTENT_URI)
+                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                            .withValue(
+                                    ContactsContract.Data.MIMETYPE,
+                                    ContactsContract.CommonDataKinds.SipAddress.CONTENT_ITEM_TYPE)
+                            .withValue(CommonDataKinds.SipAddress.SIP_ADDRESS,
+                                    a[i].ip)
+                            .withValue(ContactsContract.CommonDataKinds.SipAddress.TYPE,
+                                    ContactsContract.CommonDataKinds.SipAddress.TYPE_WORK)
+                            .build());
+                }
+
 //                добавляем имя компании
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.Data.CONTENT_URI)
@@ -279,7 +303,7 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                                 a[i].post+", "+a[i].department)
                         .withValue(ContactsContract.CommonDataKinds.Organization.TYPE,
                                 ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
-                        // это не про компанию, а наглое использование не
+                        // это не про компанию, а наглое использование не показываемых опций
                         .withValue(
                                 ContactsContract.CommonDataKinds.Organization.OFFICE_LOCATION,
                                 a[i].id)
