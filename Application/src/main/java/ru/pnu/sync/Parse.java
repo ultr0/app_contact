@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.os.Build;
 
+import android.support.v4.app.Fragment;
 import android.provider.ContactsContract;
 import android.content.ContentValues;
 import android.content.ContentUris;
@@ -227,7 +228,7 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                 ops.add(ContentProviderOperation
                         .newInsert(ContactsContract.RawContacts.CONTENT_URI)
                         .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "ru.pnu.sync")
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "PNU.Contacts")
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, context.getText(R.string.account_name))
                         .build());
 //                добавляем ФИО
                 ops.add(ContentProviderOperation
@@ -258,7 +259,7 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                                 Phone.TYPE_WORK).build());
 //                добавляем телефон SIP
                 String manufacturer = Build.MANUFACTURER;
-                if (manufacturer.equals("LENOVO")) {
+                if (manufacturer.equals("LENOVO") || manufacturer.equals("LG")) {
                     ops.add(ContentProviderOperation
                             .newInsert(ContactsContract.Data.CONTENT_URI)
                             .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)

@@ -48,23 +48,23 @@ import ru.pnu.common.accounts.GenericAccountService;
 import ru.pnu.sync.provider.FeedContract;
 
 /**
- * List fragment containing a list of Atom entry objects (articles) stored in the local database.
- *
- * <p>Database access is mediated by a content provider, specified in
- * {@link ru.pnu.sync.provider.FeedProvider}. This content
- * provider is
- * automatically populated by  {@link SyncService}.
- *
- * <p>Selecting an item from the displayed list displays the article in the default browser.
- *
- * <p>If the content provider doesn't return any data, then the first sync hasn't run yet. This sync
- * adapter assumes data exists in the provider once a sync has run. If your app doesn't work like
- * this, you should add a flag that notes if a sync has run, so you can differentiate between "no
- * available data" and "no initial sync", and display this in the UI.
- *
- * <p>The ActionBar displays a "Refresh" button. When the user clicks "Refresh", the sync adapter
- * runs immediately. An indeterminate ProgressBar element is displayed, showing that the sync is
- * occurring.
+ * Фрагмент списка, содержащий список объектов входа Atom (статьи), которые хранятся в локальной базе данных.
+ *
+ * <Р> Доступ к базе данных обеспечивается с помощью контент-провайдера, указанный в
+ * {@link ru.pnu.sync.provider.FeedProvider}. Это содержание
+ * Провайдер
+ * Заполняется автоматически через {@link SyncService}.
+ *
+ * <P> При выборе элемента из отображаемого списка отображает статью в браузере по умолчанию.
+ *
+ * <P> Если поставщик контента не возвращает никаких данных, то первая синхронизация еще не работать. Эта синхронизация
+ * Адаптер принимает данные существуют в поставщике один раз в режим синхронизации запуска. Если ваше приложение не работает, как
+ * Это, вы должны добавить флаг, который отмечает, если синхронизация закончилась, так что вы можете различать "нет
+ * Имеющиеся данные "и" без начальной синхронизации ", и отображать это в пользовательском интерфейсе.
+ *
+ * <Р> ActionBar отображает кнопку "Обновить". Когда пользователь нажимает кнопку "Обновить", адаптер синхронизации
+ * Запускается сразу. отображается неопределенными элемент ProgressBar, показывающий, что синхронизация
+ * Происходит.
  */
 public class EntryListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -72,26 +72,26 @@ public class EntryListFragment extends ListFragment
     private static final String TAG = "EntryListFragment";
 
     /**
-     * Cursor adapter for controlling ListView results.
+     * Курсор адаптер для управления ListView результатов.
      */
     private SimpleCursorAdapter mAdapter;
 
     /**
-     * Handle to a SyncObserver. The ProgressBar element is visible until the SyncObserver reports
-     * that the sync is complete.
+     * Обращайтесь к SyncObserver. Элемент ProgressBar виден, пока не сообщает SyncObserver
+     * Что синхронизация завершена.
      *
-     * <p>This allows us to delete our SyncObserver once the application is no longer in the
-     * foreground.
+     * <Р> Это позволяет удалить нашу SyncObserver когда-то приложение больше не в
+     * На первом плане.
      */
     private Object mSyncObserverHandle;
 
     /**
-     * Options menu used to populate ActionBar.
+     * Меню опций используется для заполнения ActionBar.
      */
     private Menu mOptionsMenu;
 
     /**
-     * Projection for querying the content provider.
+     * Проекция для выполнения запросов к поставщику содержимого.
      */
     private static final String[] PROJECTION = new String[]{
             FeedContract.Entry._ID,
@@ -112,7 +112,7 @@ public class EntryListFragment extends ListFragment
     private static final int COLUMN_PUBLISHED = 3;
 
     /**
-     * List of Cursor columns to read from when preparing an adapter to populate the ListView.
+     * Список столбцов курсора для чтения при подготовке адаптера для заполнения ListView.
      */
     private static final String[] FROM_COLUMNS = new String[]{
             FeedContract.Entry.COLUMN_NAME_TITLE,
@@ -127,8 +127,8 @@ public class EntryListFragment extends ListFragment
             android.R.id.text2};
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Обязательный пустой конструктор для менеджера фрагмента для конкретизации
+     * Фрагмент (например, при изменении ориентации экрана).
      */
     public EntryListFragment() {}
 
@@ -139,10 +139,10 @@ public class EntryListFragment extends ListFragment
     }
 
     /**
-     * Create SyncAccount at launch, if needed.
+     * Создание SyncAccount на старте, если это необходимо.
      *
-     * <p>This will create a new account with the system for our application, register our
-     * {@link SyncService} with it, and establish a sync schedule.
+     * <Р> Это создаст новую учетную запись с системой для нашего приложения, зарегистрировать нашу
+     * {@link SyncService} с ним, а также установить расписание синхронизации.
      */
     @Override
     public void onAttach(Activity activity) {
@@ -205,12 +205,12 @@ public class EntryListFragment extends ListFragment
     }
 
     /**
-     * Query the content provider for data.
+     * Запрос поставщика контента для данных.
      *
-     * <p>Loaders do queries in a background thread. They also provide a ContentObserver that is
-     * triggered when data in the content provider changes. When the sync adapter updates the
-     * content provider, the ContentObserver responds by resetting the loader and then reloading
-     * it.
+     * <Р> Погрузчики делать запросы в фоновом потоке. Они также обеспечивают ContentObserver, который
+     * Срабатывает при изменении данных в контент-провайдера. Когда адаптер синхронизации обновляет
+     * Контент-провайдер, то ContentObserver реагирует путем сброса загрузчик, а затем загрузить
+     * Это.
      */
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -225,8 +225,8 @@ public class EntryListFragment extends ListFragment
     }
 
     /**
-     * Move the Cursor returned by the query into the ListView adapter. This refreshes the existing
-     * UI with the data in the Cursor.
+     * Переместить курсор, возвращаемый запросом к адаптеру ListView. Это обновляет существующий
+     * UI с данными курсора.
      */
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
@@ -234,10 +234,10 @@ public class EntryListFragment extends ListFragment
     }
 
     /**
-     * Called when the ContentObserver defined for the content provider detects that data has
-     * changed. The ContentObserver resets the loader, and then re-runs the loader. In the adapter,
-     * set the Cursor value to null. This removes the reference to the Cursor, allowing it to be
-     * garbage-collected.
+     * Вызывается, когда ContentObserver определено для провайдера контента обнаруживает, что данные
+     * Изменен. ContentObserver сбрасывает загрузчик, а затем повторно запускает загрузчик. В адаптера,
+     * Установите значение курсора на NULL. Это удаляет ссылку на курсор, что позволяет ему быть
+     * Сборщиком мусора.
      */
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
@@ -255,7 +255,7 @@ public class EntryListFragment extends ListFragment
     }
 
     /**
-     * Respond to user gestures on the ActionBar.
+     * Ответить на пользовательские жесты на панели действий.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -315,7 +315,7 @@ public class EntryListFragment extends ListFragment
 //    }
 
     /**
-     * Load an article in the default browser when selected by the user.
+     * Загрузить статью в браузере по умолчанию при выборе пользователем.
      */
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
@@ -342,10 +342,10 @@ public class EntryListFragment extends ListFragment
     }
 
     /**
-     * Set the state of the Refresh button. If a sync is active, turn on the ProgressBar widget.
-     * Otherwise, turn it off.
+     * Установите состояние кнопки Обновить. Если синхронизация активна, включите виджет Progress Bar.
+     * В противном случае, выключите его.
      *
-     * @param refreshing True if an active sync is occuring, false otherwise
+     * @param refreshing True если активная синхронизация происходит, иначе false
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void setRefreshActionButtonState(boolean refreshing) {
@@ -364,10 +364,10 @@ public class EntryListFragment extends ListFragment
     }
 
     /**
-     * Crfate a new anonymous SyncStatusObserver. It's attached to the app's ContentResolver in
-     * onResume(), and removed in onPause(). If status changes, it sets the state of the Refresh
-     * button. If a sync is active or pending, the Refresh button is replaced by an indeterminate
-     * ProgressBar; otherwise, the button itself is displayed.
+     * Crfate новый анонимный SyncStatusObserver. Он прикреплен к ContentResolver о приложении в
+     * OnResume (), и удаляется в OnPause (). Если изменения статуса, он устанавливает состояние Обновить
+     * Кнопка. Если синхронизация активна или в ожидании, кнопка Refresh заменяется неопределенная
+     * Индикатор; в противном случае, отображается сама кнопка.
      */
     private SyncStatusObserver mSyncStatusObserver = new SyncStatusObserver() {
         /** Callback invoked with the sync adapter status changes. */

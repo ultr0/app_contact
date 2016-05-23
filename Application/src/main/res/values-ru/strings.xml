@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_name">ТОГУ. Контакты</string>
+    <string name="app_name">ТОГУ. Контакты</string>
+    <string name="description_refresh">Обновить</string>
+    <string name="loading">Пожалуйста, подождите синхронизации...</string>
+    <string name="title_entry_detail">Содержимое</string>
+    <string name="intro_message"><![CDATA[                                   Это приложение демонстрирует фоновую загрузку данных             не стоит воспринимать данные             внутри вида списка.                               ]]></string>
+</resources>
