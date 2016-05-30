@@ -17,6 +17,7 @@
 package ru.pnu.sync;
 
 
+import android.Manifest;
 import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -24,11 +25,14 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SyncStatusObserver;
 
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.support.v4.app.ActivityCompat;
+import android.support.v13.app.FragmentCompat ;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -125,6 +129,15 @@ public class EntryListFragment extends ListFragment
     private static final int[] TO_FIELDS = new int[]{
             android.R.id.text1,
             android.R.id.text2};
+    /**
+     * Permissions required to read and write contacts.
+     */
+    private static String[] PERMISSIONS_CONTACT = {Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS};
+    /**
+     * Id to identify a contacts permission request.
+     */
+    private static final int REQUEST_CONTACTS = 1;
 
     /**
      * Обязательный пустой конструктор для менеджера фрагмента для конкретизации
@@ -262,57 +275,77 @@ public class EntryListFragment extends ListFragment
         switch (item.getItemId()) {
             // If the user clicks the "Refresh" button.
             case R.id.menu_refresh:
-                SyncUtils.TriggerRefresh(getContext());
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
+                            != PackageManager.PERMISSION_GRANTED
+                            || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // Contacts permissions have not been granted.
+                        Log.i(TAG, "Contact permissions has NOT been granted. Requesting permissions.");
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                                Manifest.permission.READ_CONTACTS)
+                                || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                                Manifest.permission.WRITE_CONTACTS)) {
+
+                            // Provide an additional rationale to the user if the permission was not granted
+                            // and the user would benefit from additional context for the use of the permission.
+                            // For example, if the request has been denied previously.
+                            Log.i(TAG,
+                                    "Displaying contacts permission rationale to provide additional context.");
+                            Toast.makeText(getContext(),
+                                    getContext().getText(R.string.permission),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
+                            // Display a SnackBar with an explanation and a button to trigger the request.
+//                            Snackbar.make(mLayout, R.string.permission_contacts_rationale,
+//                                    Snackbar.LENGTH_INDEFINITE)
+//                                    .setAction(R.string.ok, new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View view) {
+//                                            ActivityCompat
+//                                                    .requestPermissions(MainActivity.this, PERMISSIONS_CONTACT,
+//                                                            REQUEST_CONTACTS);
+//                                        }
+//                                    })
+//                                    .show();
+                        } else {
+                            // Contact permissions have not been granted yet. Request them directly.
+                            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
+                            Log.i(TAG, "Lol");
+                        }
+
+                    } else {
+
+                        // Contact permissions have been granted. Show the contacts fragment.
+                        Log.i(TAG,
+                                "Contact permissions have already been granted. Displaying contact details.");
+                        SyncUtils.TriggerRefresh(getContext());
+//                        showContactDetails();
+                    }
+                } else {
+                    SyncUtils.TriggerRefresh(getContext());
+//                    return false;
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-//    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
-//            != PackageManager.PERMISSION_GRANTED
-//    || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS)
-//            != PackageManager.PERMISSION_GRANTED) {
-//        // Contacts permissions have not been granted.
-//        Log.i(TAG, "Contact permissions has NOT been granted. Requesting permissions.");
-//        requestContactsPermissions();
-//
-//    } else {
-//
-//        // Contact permissions have been granted. Show the contacts fragment.
-//        int i=1;
-//    }
 
-//    private void requestContactsPermissions() {
-//        // BEGIN_INCLUDE(contacts_permission_request)
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-//                Manifest.permission.READ_CONTACTS)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-//                Manifest.permission.WRITE_CONTACTS)) {
-//
-//            // Provide an additional rationale to the user if the permission was not granted
-//            // and the user would benefit from additional context for the use of the permission.
-//            // For example, if the request has been denied previously.
-//            Log.i(TAG,
-//                    "Displaying contacts permission rationale to provide additional context.");
-//
-//            // Display a SnackBar with an explanation and a button to trigger the request.
-//            Toast.makeText(EntryListActivity, R.string.permission_contacts_rationale,
-//                    Snackbar.LENGTH_INDEFINITE)
-//                    .setAction(R.string.ok, new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            ActivityCompat
-//                                    .requestPermissions(getActivity(), PERMISSIONS_CONTACT,
-//                                            REQUEST_CONTACTS);
-//                        }
-//                    })
-//                    .show();
-//        } else {
-//            // Contact permissions have not been granted yet. Request them directly.
-//            ActivityCompat.requestPermissions(this, PERMISSIONS_CONTACT, REQUEST_CONTACTS);
-//        }
-//        // END_INCLUDE(contacts_permission_request)
-//    }
+    public void showContacts(View v) {
+        Log.i(TAG, "Show contacts button pressed. Checking permissions.");
+
+        // Verify that all required contact permissions have been granted.
+
+    }
+
+    private void requestContactsPermissions() {
+        // BEGIN_INCLUDE(contacts_permission_request)
+
+        // END_INCLUDE(contacts_permission_request)
+    }
 
     /**
      * Загрузить статью в браузере по умолчанию при выборе пользователем.

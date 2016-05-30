@@ -33,8 +33,12 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
     <!-- Required because we're manually creating a new account. -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission-sdk-23 android:name="android.permission.READ_CONTACTS"/>
 
 
     <application
