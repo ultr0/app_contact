@@ -24,6 +24,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import ru.pnu.common.accounts.GenericAccountService;
 import ru.pnu.sync.provider.FeedContract;
@@ -93,6 +94,10 @@ public class SyncUtils {
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         Parse g = new Parse();
         g.Parse_contacts(null, context, "");
+        Toast.makeText(context,
+                context.getText(R.string.permission),
+                Toast.LENGTH_SHORT)
+                .show();
         ContentResolver.requestSync(
                 GenericAccountService.GetAccount(ACCOUNT_TYPE), // Sync account
                 FeedContract.CONTENT_AUTHORITY,                 // Content authority

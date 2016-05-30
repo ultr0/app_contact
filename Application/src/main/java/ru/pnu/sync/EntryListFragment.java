@@ -309,6 +309,7 @@ public class EntryListFragment extends ListFragment
 //                                    .show();
                         } else {
                             // Contact permissions have not been granted yet. Request them directly.
+                            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
                             Toast.makeText(getContext(),
                                     getContext().getText(R.string.permission),
                                     Toast.LENGTH_SHORT)
