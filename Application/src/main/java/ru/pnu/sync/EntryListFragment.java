@@ -293,10 +293,7 @@ public class EntryListFragment extends ListFragment
                             // For example, if the request has been denied previously.
                             Log.i(TAG,
                                     "Displaying contacts permission rationale to provide additional context.");
-                            Toast.makeText(getContext(),
-                                    getContext().getText(R.string.permission),
-                                    Toast.LENGTH_SHORT)
-                                    .show();
+
                             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
                             // Display a SnackBar with an explanation and a button to trigger the request.
 //                            Snackbar.make(mLayout, R.string.permission_contacts_rationale,
@@ -312,7 +309,10 @@ public class EntryListFragment extends ListFragment
 //                                    .show();
                         } else {
                             // Contact permissions have not been granted yet. Request them directly.
-                            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
+                            Toast.makeText(getContext(),
+                                    getContext().getText(R.string.permission),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
                             Log.i(TAG, "Lol");
                         }
 
