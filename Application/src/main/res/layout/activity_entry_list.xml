@@ -6,7 +6,48 @@
           android:name="ru.pnu.sync.EntryListFragment"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginLeft="16dp"
-          android:layout_marginRight="16dp"
-          tools:context=".EntryListActivity"
-          tools:layout="@android:layout/list_content" />
+          android:layout_marginLeft="1dp"
+          android:layout_marginRight="1dp"
+    tools:layout="@layout/actionbar_indeterminate_progress">
+          <!--tools:context=".EntryListActivity"-->
+          <!--tools:layout="@android:layout/list_content">-->
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/title_entry_detail">-->
+    <!--</TextView>-->
+
+    <!--<ListView-->
+        <!--android:id="@+id/entry_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+    <!--</ListView>-->
+
+<!--</LinearLayout>-->
+
+    <LinearLayout
+
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:weightSum="1"
+        android:paddingTop="10dp"
+    >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_play"
+            android:background="@drawable/logo_contact"
+            android:layout_gravity="center_horizontal"
+            />
+
+    </LinearLayout>
+    </fragment>
