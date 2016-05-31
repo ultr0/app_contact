@@ -32,7 +32,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.support.v4.app.ActivityCompat;
-import android.support.v13.app.FragmentCompat ;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -148,6 +147,48 @@ public class EntryListFragment extends ListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
+                    != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Contacts permissions have not been granted.
+                Log.i(TAG, "Contact permissions has NOT been granted. Requesting permissions.");
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.READ_CONTACTS)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.WRITE_CONTACTS)) {
+
+                    // Provide an additional rationale to the user if the permission was not granted
+                    // and the user would benefit from additional context for the use of the permission.
+                    // For example, if the request has been denied previously.
+                    Log.i(TAG,
+                            "Displaying contacts permission rationale to provide additional context.");
+
+                    ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
+                    Toast.makeText(getContext(),
+                            getContext().getText(R.string.start),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    // Contact permissions have not been granted yet. Request them directly.
+                    ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
+                    Toast.makeText(getContext(),
+                            getContext().getText(R.string.permission),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    Log.i(TAG, "Lol");
+                }
+            } else {
+
+                // Contact permissions have been granted. Show the contacts fragment.
+                Log.i(TAG,
+                        "Contact permissions have already been granted. Displaying contact details.");
+//                SyncUtils.TriggerRefresh(getContext());
+            }
+        } else {
+//            SyncUtils.TriggerRefresh(getContext());
+        }
         setHasOptionsMenu(true);
     }
 
@@ -192,9 +233,9 @@ public class EntryListFragment extends ListFragment
                 }
             }
         });
-        setListAdapter(mAdapter);
-        setEmptyText(getText(R.string.loading));
-        getLoaderManager().initLoader(0, null, this);
+//        setListAdapter(mAdapter);
+//        setEmptyText(getText(R.string.loading));
+//        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -295,18 +336,7 @@ public class EntryListFragment extends ListFragment
                                     "Displaying contacts permission rationale to provide additional context.");
 
                             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
-                            // Display a SnackBar with an explanation and a button to trigger the request.
-//                            Snackbar.make(mLayout, R.string.permission_contacts_rationale,
-//                                    Snackbar.LENGTH_INDEFINITE)
-//                                    .setAction(R.string.ok, new View.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(View view) {
-//                                            ActivityCompat
-//                                                    .requestPermissions(MainActivity.this, PERMISSIONS_CONTACT,
-//                                                            REQUEST_CONTACTS);
-//                                        }
-//                                    })
-//                                    .show();
+
                         } else {
                             // Contact permissions have not been granted yet. Request them directly.
                             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_CONTACT, REQUEST_CONTACTS);
@@ -322,12 +352,18 @@ public class EntryListFragment extends ListFragment
                         // Contact permissions have been granted. Show the contacts fragment.
                         Log.i(TAG,
                                 "Contact permissions have already been granted. Displaying contact details.");
+                        Toast.makeText(getContext(),
+                                getContext().getText(R.string.start),
+                                Toast.LENGTH_SHORT)
+                                .show();
                         SyncUtils.TriggerRefresh(getContext());
-//                        showContactDetails();
                     }
                 } else {
+                    Toast.makeText(getContext(),
+                            getContext().getText(R.string.start),
+                            Toast.LENGTH_SHORT)
+                            .show();
                     SyncUtils.TriggerRefresh(getContext());
-//                    return false;
                 }
                 return true;
         }

@@ -92,12 +92,8 @@ public class SyncUtils {
         // Disable sync backoff and ignore sync preferences. In other words...perform sync NOW!
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        Parse g = new Parse();
-        g.Parse_contacts(null, context, "");
-        Toast.makeText(context,
-                context.getText(R.string.permission),
-                Toast.LENGTH_SHORT)
-                .show();
+
+
         ContentResolver.requestSync(
                 GenericAccountService.GetAccount(ACCOUNT_TYPE), // Sync account
                 FeedContract.CONTENT_AUTHORITY,                 // Content authority

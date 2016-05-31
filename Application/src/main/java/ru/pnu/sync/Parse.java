@@ -25,6 +25,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.PhoneLookup;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -87,6 +88,7 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
         super();
         this.url_a = url;
         context = con;
+
     }
 
 
@@ -119,12 +121,16 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
 
 
             OutputStream os = urlConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getQuery(paramss));
-            writer.flush();
-            writer.close();
-            os.close();
+//            try {
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(getQuery(paramss));
+                writer.flush();
+                writer.close();
+//            }
+//            finally {
+                os.close();
+//            }
             int responseCode=urlConnection.getResponseCode();
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
@@ -183,7 +189,6 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
 
             contact[] a = new contact[jsonArray.length()];
             Log.d("length json", String.valueOf(jsonArray.length()));
-//            var.edu_rasp_api[] a = new var.edu_rasp_api[jsonArray.length()];
 
             for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -335,6 +340,13 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
                 Log.d("add contacts", "Контакт: " + a[i].surname + " добавлен");
             }
 
+            Toast.makeText(context,
+                    context.getText(R.string.update),
+                    Toast.LENGTH_SHORT)
+                    .show();
+
+            a = null;
+            jsonArray = null;
 
         } catch (JSONException e) {
             e.printStackTrace();

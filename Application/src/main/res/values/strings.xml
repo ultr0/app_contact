@@ -20,6 +20,7 @@ limitations under the License.
     <string name="package_name" translatable="false">ru.pnu.sync</string>
     <string name="title_entry_detail">Entry details</string>
     <string name="permission">Open Permissions and grant the Contact permission</string>
+    <string name="start">Ok. Start sync</string>
     <string name="update">Contacts PNU has been update</string>
     <string name="loading">Waiting for sync...</string>
     <string name="description_refresh">Refresh</string>
