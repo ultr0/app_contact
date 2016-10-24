@@ -147,6 +147,7 @@ public class EntryListFragment extends ListFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Log.i("SDK", );
         if (Build.VERSION.SDK_INT >= 23) {
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
                     != PackageManager.PERMISSION_GRANTED
@@ -365,6 +366,7 @@ public class EntryListFragment extends ListFragment
                             .show();
                     SyncUtils.TriggerRefresh(getContext());
                 }
+                Log.i(TAG, String.valueOf(Build.VERSION.SDK_INT));
                 return true;
         }
         return super.onOptionsItemSelected(item);

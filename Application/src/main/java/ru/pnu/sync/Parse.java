@@ -42,6 +42,7 @@ import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 
 import static android.provider.ContactsContract.*;
+import static ru.pnu.sync.GlobalData.*;
 
 
 /**
@@ -51,7 +52,7 @@ import static android.provider.ContactsContract.*;
 public class Parse {
 //    public Context context;
 
-    String http = "http://10.10.15.4:8000";
+//    String http = "http://10.10.15.4:8000";
 
     Parse(){
 
@@ -106,8 +107,8 @@ class Parse_contacts extends AsyncTask<String, Void, String> {
         // получаем данные с внешнего ресурса
         try {
 
-            URL url = new URL("http://10.10.15.4:8000/portal_api/m/contacts/");
-            Log.e("connect", "10.10.15.4:8000/portal_api/m/contacts/");
+            URL url = new URL(URL_connection);
+            Log.e("connect", URL_connection);
             urlConnection = (HttpURLConnection) url.openConnection();
 
             urlConnection.setReadTimeout(10000);

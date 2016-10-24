@@ -27,9 +27,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+
 public class GenericAccountService extends Service {
     private static final String TAG = "GenericAccountService";
-    public static final String ACCOUNT_NAME = "Account";
+    public static final String ACCOUNT_NAME = "Справочник ТОГУ";
     private Authenticator mAuthenticator;
 
     /**
